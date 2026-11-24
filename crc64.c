@@ -210,11 +210,33 @@ unsigned long long fio_crc64(const unsigned char *buffer, unsigned long length)
 	return crc;
 }
 
+int is_different_strings(const char *str1, const char *str2) {
+  for (size_t i = 0; i < STRLEN; i++) {
+    if (str1[i] != str2[i]) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+int is_valid_string(const char *str) {
+  for (size_t i = 0; i < STRLEN; i++) {
+    if (str[i] != ' ' && (str[i] < 'a' || str[i] > 'z')) {
+      return 0;
+    }
+  }
+  return 1;
+}
+
 void check_unique() {
   char buf1[STRLEN+1];
   buf1[STRLEN] = 0;
   char buf2[STRLEN+1];
   buf2[STRLEN] = 0;
+  if (is_different_strings(buf1, buf2)
+    && is_valid_string(buf1) && is_valid_string(buf2)) {
+    assert(crc64(0, buf1, STRLEN) != crc64(0, buf2, STRLEN));  
+  }
   //TODO: здесь нужно написать свои ограничения, которые гарантируют следующее:
   //TODO: если в буферах buf1 и buf2 разные строки и каждый их символ либо пробел, либо буква от `a` (латинская) до `z`
   //TODO: то crc64 хэши этих буферов различны
