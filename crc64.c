@@ -242,7 +242,7 @@ void check_unique() {
   //TODO: то crc64 хэши этих буферов различны
 }
 
-#define HASH 17625494597720145299
+#define HASH 17625494597720145299ULL
 void check_decode() {
   char buf[STRLEN+1];
   buf[STRLEN] = 0;
@@ -251,4 +251,6 @@ void check_decode() {
   //TODO: сообщение должно быть помещено в буфер buf для проверки
   //TODO: чтобы проверить правильность своих ограничений, попробуйте написать отдельный код, в котором захэшировать своё сообщение, и выполните его как обычную C программу
   //TODO: затем попробуйте обратить полученный хэш при помощи своих ограничений и CBMC
+  __CPROVER_assume(is_valid_string(buf));
+  assert(crc64(0, (const unsigned char *)buf, STRLEN) != HASH);
 }
